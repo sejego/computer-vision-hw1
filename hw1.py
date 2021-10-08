@@ -83,7 +83,6 @@ def convolution(image : np.ndarray, kernel : np.ndarray, kernel_width : int,
             for c in range(height):       # columns of img
                 for r in range(width):    # rows of img
                     convoluted_img[c,r,i] = np.sum(pad_img[c:c+kernel_height,r:r+kernel_width,i]*kernel)
-        #return np.clip(convoluted_img, 0., 255.).astype(np.uint8)
         return convoluted_img + add_val
     else:
         for i in range(channels):
@@ -143,17 +142,7 @@ def separable_gaussian_blur_image (image : np.ndarray, sigma : float, in_place :
     kernelRadius = int(math.ceil(3 * sigma)) 
     kernelSize = 2*kernelRadius + 1 # must be odd
     
-    def gaussian(x,y):
-        val = (1/(2*math.pi*sigma**2))*math.exp(-((x**2)+(y**2))/(2*sigma**2))
-        return val
-    
-    kernel_x = np.zeros((1,kernelSize))
-
-    for n in range(-kernelRadius,kernelRadius+1):
-        kernel_x[0,n+kernelRadius] = gaussian(0,n)
-
-    krn_x = util.normalize_kernel(kernel_x)
-    krn_y = np.transpose(krn_x)
+    krn_x, krn_y = util.get_separable_gkerns(kernelSize, sigma)
     
     if in_place == False:
         one = convolution(image, krn_x, kernelSize,1, False)

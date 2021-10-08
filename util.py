@@ -77,6 +77,13 @@ def rotate_image_fast(interpolation_fn, image: np.ndarray, rotation_angle: float
 
 ''' BELOW THIS LINE ARE AUTHOR'S HELPER METHODS '''
 
+def get_separable_gkerns(kernlen=21, nsig=3):
+    """Returns 2 1D separable gaussian kernels."""
+
+    x = np.linspace(-nsig, nsig, kernlen+1)
+    kern1d = np.array([np.diff(st.norm.cdf(x))])
+    return kern1d/kern1d.sum(), np.transpose(kern1d/kern1d.sum());
+
 def img_to_uint8(image : np.ndarray) -> np.ndarray :
     return np.clip(image, 0., 255.).astype(np.uint8)
 
