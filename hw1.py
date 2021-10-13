@@ -360,18 +360,18 @@ def find_peaks_image(image : np.ndarray, thres : float, in_place : bool = False)
     out_img = np.zeros_like(image)
 
     def compare_peaks(img):
-        for x in range(image.shape[1]):
-            for y in range(image.shape[0]):
-                if mag[y][x][0] >= thres:
+        for y in range(image.shape[0]):
+            for x in range(image.shape[1]):
+                if mag[y][x][0] > thres:
                     angle = theta[y][x]
-                    e1x = x + 1 * np.cos(angle)
-                    e1y = y + 1 * np.sin(angle)
-                    e2x = x - 1 * np.cos(angle)
-                    e2y = y - 1 * np.sin(angle)
+                    e1x = y + 1 * np.cos(angle)
+                    e1y = x + 1 * np.sin(angle)
+                    e2x = y - 1 * np.cos(angle)
+                    e2y = x - 1 * np.sin(angle)
                     e1_val = bilinear_interpolation(mag, e1x, e1y)
                     e2_val = bilinear_interpolation(mag, e2x, e2y)
                     if mag[y][x][0] >= e1_val[0]:
-                        if mag[y][x] >= e2_val[0]:
+                        if mag[y][x][0] >= e2_val[0]:
                             img[y][x] = 255
                 else:
                     img[y][x] = 0
